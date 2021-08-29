@@ -12,9 +12,10 @@
   },
   "scripts": {
     "start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
+    "dev": "nodemon --config nodemon.json --inspect-brk src/index.ts",
     "create": "npm run build && npm run test",
     "build": "tsc -p .",
-    "local": "sudo npm i -g && pizza",
+    "local": "sudo npm i -g && webVital-cli",
     "global": "npm i -g && webVital-cli",
     "refresh": "rm -rf ./node_modules ./package-lock.json && npm install"
   },
@@ -24,12 +25,19 @@
     "chalk": "^4.1.2",
     "clear": "^0.1.0",
     "commander": "^8.1.0",
+    "compression": "^1.7.4",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
     "figlet": "^1.5.2",
-    "path": "^0.12.7"
+    "lighthouse-cli": "^0.1.2",
+    "path": "^0.12.7",
+    "puppeteer": "^10.2.0"
   },
   "devDependencies": {
+    "@types/compression": "^1.7.1",
+    "@types/express": "^4.17.13",
     "@types/node": "^16.7.4",
-    "nodemon": "^2.0.12",
+    "nodemon": "^1.12.7",
     "ts-node": "^10.2.1",
     "typescript": "^4.4.2"
   }
