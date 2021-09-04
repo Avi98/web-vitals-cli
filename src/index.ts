@@ -9,7 +9,7 @@ require("dotenv").config();
 
 let filePath;
 if (process.env.NODE_ENVIORNMENT === "develop") {
-  filePath = path.join(process.cwd(), "dummy-test/webVitalsrc.js");
+  filePath = path.join(process.cwd(), "dummy-test/webVitalsrc.ts");
 } else {
   filePath = path.join(process.cwd(), "webVitalsrc.js");
 }

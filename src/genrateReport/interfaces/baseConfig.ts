@@ -1,9 +1,23 @@
 export interface IBaseConfig {
   option: {
     buildPath: string;
-    urls: string[];
     run: number;
-    loginScriptPath: string;
-    lightouseConfig: any;
+    env?: string;
+    puppetter: {
+      urls: string[];
+      root?: string;
+      loginSelector: {
+        emailFieldSelector: string;
+        passwordFieldSelector: string;
+      };
+      loginCredentionals: {
+        userName: string;
+        password: string;
+      };
+      puppetterScriptPath?: string;
+      puppetterLunchOptions?: any;
+    };
+    lightouseConfig?: any;
+    clearReports?: boolean;
   };
 }
