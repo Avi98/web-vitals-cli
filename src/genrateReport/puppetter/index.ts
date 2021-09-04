@@ -57,7 +57,6 @@ class PuppetterMiddleware implements IPuppetterMiddleware {
   }
 
   async invokePuppetterScript() {
-    console.log("process--->", process.env.PATH?.split(":").join("\n"));
     if (!this.options.option.puppetter) return;
     const options = this.options;
     const browser = await this.getBrowser();
