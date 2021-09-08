@@ -1,6 +1,7 @@
 import path from "path";
 import loginScript from "./loginScript";
 import { IBaseConfig } from "../interfaces/baseConfig";
+import { log } from "../utils/log";
 export interface IPuppetterMiddleware {
   getBrowser: () => void;
   getPuppetter: () => any;
@@ -57,7 +58,6 @@ class PuppetterMiddleware implements IPuppetterMiddleware {
   }
 
   async invokePuppetterScript() {
-    console.log("process--->", process.env.PATH?.split(":").join("\n"));
     if (!this.options.option.puppetter) return;
     const options = this.options;
     const browser = await this.getBrowser();
@@ -67,10 +67,12 @@ class PuppetterMiddleware implements IPuppetterMiddleware {
     if (!!isLoginRequired) return;
     if (scriptPath) {
       const script = require(path.join(process.cwd(), scriptPath));
+      log("login in with genric script");
       await script(browser, options);
       return;
     }
     // if no coustom script is provided then done run coustom report
+    log("login inn with provided script");
     await loginScript(browser, options);
   }
 }

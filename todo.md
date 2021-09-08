@@ -22,5 +22,16 @@
 
 ### date 04/09/2021
 
-- [ ] run lighthouse cli build
-- [ ] create payload to save data in json file
+- [x] run lighthouse cli build
+- [x] create payload to save data in json file
+- [ ] test puppeter script with sage build
+- [ ] fix close server function
+- [ ] run lighthouse for 3 time min and store it in file
+- [ ] read git data like branch, branch author, target branch?, commits
+- [ ] print data on console(performace, )
+
+---
+
+hook validations for api
+fix layout issue for forms nested grid(stacks)
+fix inline validations for yes no type

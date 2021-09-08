@@ -3,6 +3,7 @@ export interface IBaseConfig {
     buildPath: string;
     run: number;
     env?: string;
+    maxNumberOfRuns?: number;
     puppetter: {
       urls: string[];
       root?: string;
