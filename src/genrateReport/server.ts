@@ -47,16 +47,19 @@ class StaticServer implements IStaticServer {
       const serverAddress = this.server?.address();
       if (serverAddress && typeof serverAddress !== "string") {
         this.port = serverAddress.port;
-        process.stdout.write(chalk.green(`Server start at ${this.port}`));
+        process.stdout.write(
+          chalk.green(`Server start at ${serverAddress.port} \n`)
+        );
       }
     });
   }
 
   close() {
-    if (!this.server) return;
+    const server = this.server;
+    if (!server) return;
 
-    process.stdout.write(chalk.green("closing server"));
-    this.server.close();
+    process.stdout.write(chalk.yellow("closing server \n"));
+    server.close();
   }
 }
 

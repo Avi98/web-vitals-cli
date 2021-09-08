@@ -9,7 +9,7 @@ require("dotenv").config();
 
 let filePath;
 if (process.env.NODE_ENVIORNMENT === "develop") {
-  filePath = path.join(process.cwd(), "dummy-test/webVitalsrc.ts");
+  filePath = path.join(process.cwd(), "dummy-test/webVitalsrc.js");
 } else {
   filePath = path.join(process.cwd(), "webVitalsrc.js");
 }
@@ -32,10 +32,9 @@ console.log(
   )
 );
 
-GatherLighthouseData(options);
-// .catch((error: Error) => {
-//   // process.stderr.write(chalk.red("error while running the cli"));
-//   // if (error.stdout) process.stderr.write("\n" + error.stdout.slice(0, 4000));
-//   // if (error.stderr) process.stderr.write("\n" + error.stderr);
-//   // process.exit(1);
-// });
+GatherLighthouseData(options).catch((error: Error) => {
+  process.stderr.write(chalk.red("error while running the cli"));
+  if (error.stdout) process.stderr.write("\n" + error.stdout.slice(0, 4000));
+  if (error.stderr) process.stderr.write("\n" + error.stderr);
+  process.exit(1);
+});
