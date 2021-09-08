@@ -1,15 +1,15 @@
-import path from "path";
 import fs from "fs";
+import rimraf from "rimraf";
+import path from "path";
 
-import { IBaseConfig } from "./interfaces/baseConfig";
+import { IBaseConfig } from "../interfaces/baseConfig";
 import LighthouseRunner from "./lighthouseRunner";
 import PuppetterMiddleware, { IPuppetterMiddleware } from "./puppetter";
 import StaticServer from "./server";
-import { log } from "./utils/log";
+import { log, messageTypeEnum } from "../utils/log";
+import { BASE_REPORT_DIR } from "../utils/consts";
+import { uploadReports } from "../uploadReports";
 
-const startServer = async (config: IBaseConfig) => {};
-
-const BASE_REPORT_DIR = "WEB_VITALS_REPORT";
 type isReportDirExisitsType = () => void;
 const createReportDirIfNotThere: isReportDirExisitsType = () => {
   const filePath = path.join(process.cwd(), `/${BASE_REPORT_DIR}`);
@@ -39,8 +39,10 @@ const runOnUrl = async (url: string, option: IBaseConfig) => {
       `${new Date()}.json`
     );
     if (result) fs.writeFileSync(reportSavePath, result);
+    uploadReports();
+    log("Done running lighthouse", messageTypeEnum.SUCCESS);
   } catch (error: any) {
-    process.stderr.write(error);
+    throw new Error(error);
   }
   // }
 };
@@ -74,6 +76,10 @@ const GatherLighthouseData = async (config: IBaseConfig) => {
   if (!config) {
     throw new Error("Please provide webvitals config file");
   }
+  // delete base dir
+  const baseReportDirPath = path.join(process.cwd(), BASE_REPORT_DIR);
+  rimraf.sync(baseReportDirPath);
+
   const puppeteer = new PuppetterMiddleware(config);
   const { urls, server } = await startServerAndGetUrls(config);
 

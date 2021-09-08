@@ -1,7 +1,7 @@
 import path from "path";
 import loginScript from "./loginScript";
-import { IBaseConfig } from "../interfaces/baseConfig";
-import { log } from "../utils/log";
+import { IBaseConfig } from "../../interfaces/baseConfig";
+import { log } from "../../utils/log";
 export interface IPuppetterMiddleware {
   getBrowser: () => void;
   getPuppetter: () => any;

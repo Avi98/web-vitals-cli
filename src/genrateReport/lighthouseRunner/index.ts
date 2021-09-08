@@ -1,6 +1,6 @@
 import path from "path";
 import { spawn } from "child_process";
-import { IBaseConfig } from "../interfaces/baseConfig";
+import { IBaseConfig } from "../../interfaces/baseConfig";
 
 const chromeLauncher = require("chrome-launcher");
 
