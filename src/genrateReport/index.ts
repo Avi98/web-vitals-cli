@@ -39,7 +39,6 @@ const runOnUrl = async (url: string, option: IBaseConfig) => {
       `${new Date()}.json`
     );
     if (result) fs.writeFileSync(reportSavePath, result);
-    uploadReports();
     log("Done running lighthouse", messageTypeEnum.SUCCESS);
   } catch (error: any) {
     throw new Error(error);
@@ -63,7 +62,6 @@ const startServerAndGetUrls = async (config: IBaseConfig) => {
   }
 
   await server.listen();
-  console.log("port-->", server.portNumber);
   urlArray.forEach((path, i) => {
     const link = new URL(path, "http://localhost");
     link.port = server.portNumber.toString();
@@ -90,6 +88,8 @@ const GatherLighthouseData = async (config: IBaseConfig) => {
     await runOnUrl(url, config);
   }
   server.close();
+  log("Upload to server", messageTypeEnum.info)
+  uploadReports(config)
 };
 
 export default GatherLighthouseData;

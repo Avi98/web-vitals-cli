@@ -1,6 +1,7 @@
 import path from "path";
 import { spawn } from "child_process";
 import { IBaseConfig } from "../../interfaces/baseConfig";
+import { log } from "../../utils/log";
 
 const chromeLauncher = require("chrome-launcher");
 
@@ -9,6 +10,7 @@ interface ILighthouseRunner {
   getLighthousePath: () => any;
 }
 
+const isProd = process.env.NODE_ENVIRONMENT === "production";
 class LighthouseRunner implements ILighthouseRunner {
   private options: IBaseConfig;
   constructor(options: IBaseConfig) {
@@ -16,6 +18,7 @@ class LighthouseRunner implements ILighthouseRunner {
   }
 
   async run(url: string, options: IBaseConfig) {
+    const headless = [`--quite`, `--chrome-flags="--no-sandbox --headless"`];
     //emits output in Json formate, write out to stdout
     const cliOptions = [
       url,
@@ -23,9 +26,22 @@ class LighthouseRunner implements ILighthouseRunner {
       "json",
       "--output-path",
       "stdout",
-      "--screenEmulation.width=1440",
-      "--screenEmulation.height=640",
+      "--screenEmulation.disabled",
     ];
+
+    log(`lightouse running in env: ${process.env.NODE_ENV}`);
+
+    if (!options.option.debug) {
+      cliOptions.push(...headless);
+    }
+    if (options.option.chromeCliOptions) {
+      cliOptions.push(...options.option.chromeCliOptions);
+    }
+
+    if (isProd) {
+      cliOptions.push(...headless);
+    }
+
     let resolve: any;
     let reject: any;
 

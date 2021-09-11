@@ -4,6 +4,8 @@ export interface IBaseConfig {
     run: number;
     env?: string;
     maxNumberOfRuns?: number;
+    debug?: boolean;
+    chromeCliOptions: string[];
     puppetter: {
       urls: string[];
       root?: string;
