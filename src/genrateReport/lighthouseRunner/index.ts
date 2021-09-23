@@ -29,8 +29,6 @@ class LighthouseRunner implements ILighthouseRunner {
       "--screenEmulation.disabled",
     ];
 
-    log(`lightouse running in env: ${process.env.NODE_ENV}`);
-
     if (!options.option.debug) {
       cliOptions.push(...headless);
     }

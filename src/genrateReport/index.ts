@@ -26,11 +26,10 @@ const createReportDirIfNotThere: isReportDirExisitsType = () => {
  */
 const runOnUrl = async (url: string, option: IBaseConfig) => {
   const lighthouse = new LighthouseRunner(option);
+  //@TODO: run lighthouse on this url on number of times
   const maxNumberOfRuns = option.option.maxNumberOfRuns || 3;
 
   createReportDirIfNotThere();
-  log(`Running lighthouse on ${url}`);
-  // for (let i = 0; i <= maxNumberOfRuns; i++) {
   try {
     const result: any = await lighthouse.run(url, option);
     const reportSavePath = path.join(
@@ -39,7 +38,7 @@ const runOnUrl = async (url: string, option: IBaseConfig) => {
       `${new Date()}.json`
     );
     if (result) fs.writeFileSync(reportSavePath, result);
-    log("Done running lighthouse", messageTypeEnum.SUCCESS);
+    log(`Done running lighthouse on ${url} `, messageTypeEnum.SUCCESS);
   } catch (error: any) {
     throw new Error(error);
   }
@@ -88,8 +87,8 @@ const GatherLighthouseData = async (config: IBaseConfig) => {
     await runOnUrl(url, config);
   }
   server.close();
-  log("Upload to server", messageTypeEnum.info)
-  uploadReports(config)
+  log("Upload to server", messageTypeEnum.info);
+  uploadReports(config);
 };
 
 export default GatherLighthouseData;

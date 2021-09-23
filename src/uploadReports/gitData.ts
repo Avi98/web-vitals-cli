@@ -43,3 +43,16 @@ export const getAllCommits = () => {
 
   return result.stdout.trim().slice(0, 80);
 };
+
+export function getCurrentHash() {
+  const result = spawnSync("git", ["rev-list", "--no-merges", "-n1", "HEAD"], {
+    encoding: "utf8",
+  });
+  if (result.status !== 0) {
+    throw new Error(
+      "Unable to determine current hash with `git rev-parse HEAD`. "
+    );
+  }
+
+  return result.stdout.trim();
+}
