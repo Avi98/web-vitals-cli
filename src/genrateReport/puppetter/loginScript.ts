@@ -1,4 +1,4 @@
-import { IBaseConfig } from "../interfaces/baseConfig";
+import { IBaseConfig } from "../../interfaces/baseConfig";
 
 let counter = 1;
 async function login(page: any, context: IBaseConfig) {

@@ -1,6 +1,6 @@
 import chalk from "chalk";
 
-enum messageTypeEnum {
+export enum messageTypeEnum {
   ERROR = "red",
   SUCCESS = "green",
   MESSAGE = "yellow",

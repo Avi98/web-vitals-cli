@@ -1,0 +1,1 @@
+export const BASE_REPORT_DIR = "WEB_VITALS_REPORT";
