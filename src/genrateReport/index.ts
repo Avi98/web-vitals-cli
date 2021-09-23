@@ -4,7 +4,7 @@ import path from "path";
 
 import { IBaseConfig } from "../interfaces/baseConfig";
 import LighthouseRunner from "./lighthouseRunner";
-import PuppetterMiddleware, { IPuppetterMiddleware } from "./puppetter";
+import PuppetterMiddleware from "./puppetter";
 import StaticServer from "./server";
 import { log, messageTypeEnum } from "../utils/log";
 import { BASE_REPORT_DIR } from "../utils/consts";
@@ -26,11 +26,10 @@ const createReportDirIfNotThere: isReportDirExisitsType = () => {
  */
 const runOnUrl = async (url: string, option: IBaseConfig) => {
   const lighthouse = new LighthouseRunner(option);
+  //@TODO: run lighthouse on this url on number of times
   const maxNumberOfRuns = option.option.maxNumberOfRuns || 3;
 
   createReportDirIfNotThere();
-  log(`Running lighthouse on ${url}`);
-  // for (let i = 0; i <= maxNumberOfRuns; i++) {
   try {
     const result: any = await lighthouse.run(url, option);
     const reportSavePath = path.join(
@@ -39,11 +38,10 @@ const runOnUrl = async (url: string, option: IBaseConfig) => {
       `${new Date()}.json`
     );
     if (result) fs.writeFileSync(reportSavePath, result);
-    log("Done running lighthouse", messageTypeEnum.SUCCESS);
+    log(`Done running lighthouse on ${url} `, messageTypeEnum.SUCCESS);
   } catch (error: any) {
     throw new Error(error);
   }
-  // }
 };
 
 /**start serve and get all urls */
@@ -81,15 +79,15 @@ const GatherLighthouseData = async (config: IBaseConfig) => {
   const puppeteer = new PuppetterMiddleware(config);
   const { urls, server } = await startServerAndGetUrls(config);
 
+  await puppeteer.invokePuppetterScript(urls[0]);
   for (let url of urls) {
     // login into the script
-    await puppeteer.invokePuppetterScript();
     // run lighthouse on every url and store the result
     await runOnUrl(url, config);
   }
   server.close();
-  log("Upload to server", messageTypeEnum.info)
-  uploadReports(config)
+  log("Upload to server", messageTypeEnum.info);
+  // uploadReports(config);
 };
 
 export default GatherLighthouseData;

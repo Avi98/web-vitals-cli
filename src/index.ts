@@ -33,7 +33,7 @@ console.log(
 );
 
 GatherLighthouseData(options).catch((error: Error) => {
-  process.stderr.write(chalk.red("error while running the cli"));
+  process.stderr.write(chalk.red("error while running the cli", error));
   if (error.stdout) process.stderr.write("\n" + error.stdout.slice(0, 4000));
   if (error.stderr) process.stderr.write("\n" + error.stderr);
   process.exit(1);
