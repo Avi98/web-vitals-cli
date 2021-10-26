@@ -2,6 +2,7 @@ import path from "path";
 import { spawn } from "child_process";
 import { IBaseConfig } from "../../interfaces/baseConfig";
 import { log } from "../../utils/log";
+import { BASE_BASE_BROWSER_PORT } from "../../utils/consts";
 
 const chromeLauncher = require("chrome-launcher");
 
@@ -22,6 +23,8 @@ class LighthouseRunner implements ILighthouseRunner {
     //emits output in Json formate, write out to stdout
     const cliOptions = [
       url,
+      "--port",
+      BASE_BASE_BROWSER_PORT,
       "--output",
       "json",
       "--output-path",
@@ -47,6 +50,8 @@ class LighthouseRunner implements ILighthouseRunner {
       resolve = res;
       reject = rej;
     });
+
+    console.log("Start--->");
     const lighthouse = this.getLighthousePath();
 
     const child = spawn("node", [lighthouse, ...cliOptions]);
@@ -60,10 +65,12 @@ class LighthouseRunner implements ILighthouseRunner {
     child.stderr.on("error", (error) => {
       stderr += error.toString();
     });
+
     child.on("exit", (code) => {
       if (code === 0) return resolve(stdout);
+
       const error = new Error("Error occurred while running lighthouse");
-      //@ts-expect-error
+      // @ts-expect-error
       error.stdout = stdout;
       //@ts-expect-error
       error.stderr = stderr;

@@ -4,7 +4,7 @@ import path from "path";
 
 import { IBaseConfig } from "../interfaces/baseConfig";
 import LighthouseRunner from "./lighthouseRunner";
-import PuppetterMiddleware, { IPuppetterMiddleware } from "./puppetter";
+import PuppetterMiddleware from "./puppetter";
 import StaticServer from "./server";
 import { log, messageTypeEnum } from "../utils/log";
 import { BASE_REPORT_DIR } from "../utils/consts";
@@ -42,7 +42,6 @@ const runOnUrl = async (url: string, option: IBaseConfig) => {
   } catch (error: any) {
     throw new Error(error);
   }
-  // }
 };
 
 /**start serve and get all urls */
@@ -80,15 +79,15 @@ const GatherLighthouseData = async (config: IBaseConfig) => {
   const puppeteer = new PuppetterMiddleware(config);
   const { urls, server } = await startServerAndGetUrls(config);
 
+  await puppeteer.invokePuppetterScript(urls[0]);
   for (let url of urls) {
     // login into the script
-    await puppeteer.invokePuppetterScript();
     // run lighthouse on every url and store the result
     await runOnUrl(url, config);
   }
   server.close();
   log("Upload to server", messageTypeEnum.info);
-  uploadReports(config);
+  // uploadReports(config);
 };
 
 export default GatherLighthouseData;

@@ -1,1 +1,2 @@
 export const BASE_REPORT_DIR = "WEB_VITALS_REPORT";
+export const BASE_BASE_BROWSER_PORT = "8041";

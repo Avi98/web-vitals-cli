@@ -49,7 +49,5 @@ export const uploadReports = (options?: IBaseConfig) => {
   const lighthouseReport = fs.readdirSync(baseDir);
 
   for (const report of lighthouseReport) {
-    console.log("report", report);
   }
-  console.log("git data", getGitData());
 };
