@@ -32,8 +32,6 @@ class LighthouseRunner implements ILighthouseRunner {
       "--screenEmulation.disabled",
     ];
 
-    const op = cliOptions.join(" ");
-    console.log("op---->", op);
     if (!options.option.debug) {
       cliOptions.push(...headless);
     }
