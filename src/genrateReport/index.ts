@@ -1,15 +1,15 @@
-import path from "path";
 import fs from "fs";
+import rimraf from "rimraf";
+import path from "path";
 
-import { IBaseConfig } from "./interfaces/baseConfig";
+import { IBaseConfig } from "../interfaces/baseConfig";
 import LighthouseRunner from "./lighthouseRunner";
-import PuppetterMiddleware, { IPuppetterMiddleware } from "./puppetter";
+import PuppetterMiddleware from "./puppetter";
 import StaticServer from "./server";
-import { log } from "./utils/log";
+import { log, messageTypeEnum } from "../utils/log";
+import { BASE_REPORT_DIR } from "../utils/consts";
+import { uploadReports } from "../uploadReports";
 
-const startServer = async (config: IBaseConfig) => {};
-
-const BASE_REPORT_DIR = "WEB_VITALS_REPORT";
 type isReportDirExisitsType = () => void;
 const createReportDirIfNotThere: isReportDirExisitsType = () => {
   const filePath = path.join(process.cwd(), `/${BASE_REPORT_DIR}`);
@@ -26,11 +26,10 @@ const createReportDirIfNotThere: isReportDirExisitsType = () => {
  */
 const runOnUrl = async (url: string, option: IBaseConfig) => {
   const lighthouse = new LighthouseRunner(option);
+  //@TODO: run lighthouse on this url on number of times
   const maxNumberOfRuns = option.option.maxNumberOfRuns || 3;
 
   createReportDirIfNotThere();
-  log(`Running lighthouse on ${url}`);
-  // for (let i = 0; i <= maxNumberOfRuns; i++) {
   try {
     const result: any = await lighthouse.run(url, option);
     const reportSavePath = path.join(
@@ -39,10 +38,10 @@ const runOnUrl = async (url: string, option: IBaseConfig) => {
       `${new Date()}.json`
     );
     if (result) fs.writeFileSync(reportSavePath, result);
+    log(`Done running lighthouse on ${url} `, messageTypeEnum.SUCCESS);
   } catch (error: any) {
-    process.stderr.write(error);
+    throw new Error(error);
   }
-  // }
 };
 
 /**start serve and get all urls */
@@ -61,7 +60,6 @@ const startServerAndGetUrls = async (config: IBaseConfig) => {
   }
 
   await server.listen();
-  console.log("port-->", server.portNumber);
   urlArray.forEach((path, i) => {
     const link = new URL(path, "http://localhost");
     link.port = server.portNumber.toString();
@@ -74,16 +72,22 @@ const GatherLighthouseData = async (config: IBaseConfig) => {
   if (!config) {
     throw new Error("Please provide webvitals config file");
   }
+  // delete base dir
+  const baseReportDirPath = path.join(process.cwd(), BASE_REPORT_DIR);
+  rimraf.sync(baseReportDirPath);
+
   const puppeteer = new PuppetterMiddleware(config);
   const { urls, server } = await startServerAndGetUrls(config);
 
+  await puppeteer.invokePuppetterScript(urls[0]);
   for (let url of urls) {
     // login into the script
-    await puppeteer.invokePuppetterScript();
     // run lighthouse on every url and store the result
     await runOnUrl(url, config);
   }
   server.close();
+  log("Upload to server", messageTypeEnum.info);
+  // uploadReports(config);
 };
 
 export default GatherLighthouseData;

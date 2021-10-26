@@ -1,9 +1,9 @@
-import { IBaseConfig } from "../interfaces/baseConfig";
+import { IBaseConfig } from "../../interfaces/baseConfig";
 
 let counter = 1;
-async function login(page: any, context: IBaseConfig) {
+async function login(page: any, context: IBaseConfig & { url: string }) {
   //@TODO this has to be base routes injected by puppetter manager
-  const loginUrl = context.option.puppetter.root;
+  const loginUrl = context.url;
   const {
     loginSelector: { emailFieldSelector = "", passwordFieldSelector = "" },
     loginCredentionals: { password = "", userName = "" },
@@ -11,6 +11,7 @@ async function login(page: any, context: IBaseConfig) {
   if (!emailFieldSelector || !passwordFieldSelector || !password || !userName)
     return;
   await page.goto(loginUrl);
+  await page.setDefaultNavigationTimeout(0);
 
   await page.waitForSelector(emailFieldSelector);
   await page.type(emailFieldSelector, userName);
@@ -19,7 +20,7 @@ async function login(page: any, context: IBaseConfig) {
   await page.waitForNavigation();
 }
 
-async function setup(browser: any, context: IBaseConfig) {
+async function setup(browser: any, context: IBaseConfig & { url: string }) {
   // launch browser for LHCI
   const page = await browser.newPage();
   if (counter === 1) {
