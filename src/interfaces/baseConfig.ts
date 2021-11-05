@@ -6,21 +6,22 @@ export interface IBaseConfig {
     maxNumberOfRuns?: number;
     debug?: boolean;
     chromeCliOptions: string[];
-    puppetter: {
+    ci: {};
+    puppeteer: {
       urls: string[];
       root?: string;
       loginSelector: {
         emailFieldSelector: string;
         passwordFieldSelector: string;
       };
-      loginCredentionals: {
+      loginCredentials: {
         userName: string;
         password: string;
       };
-      puppetterScriptPath?: string;
-      puppetterLunchOptions?: any;
+      puppeteerScriptPath?: string;
+      puppeteerLunchOptions?: any;
     };
-    lightouseConfig?: any;
+    lighthouseConfig?: any;
     clearReports?: boolean;
   };
 }
