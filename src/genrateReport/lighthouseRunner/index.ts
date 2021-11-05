@@ -51,7 +51,6 @@ class LighthouseRunner implements ILighthouseRunner {
       reject = rej;
     });
 
-    console.log("Start--->");
     const lighthouse = this.getLighthousePath();
 
     const child = spawn("node", [lighthouse, ...cliOptions]);
