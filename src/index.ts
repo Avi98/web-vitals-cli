@@ -8,7 +8,7 @@ const figlet = require("figlet");
 require("dotenv").config();
 
 let filePath;
-if (process.env.NODE_ENVIORNMENT === "develop") {
+if (process.env.NODE_ENV === "develop") {
   filePath = path.join(process.cwd(), "dummy-test/webVitalsrc.js");
 } else {
   filePath = path.join(process.cwd(), "webVitalsrc.js");
