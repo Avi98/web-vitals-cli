@@ -6,6 +6,7 @@
     "ts": "node --require ts-node/register"
   },
   "watch": ["src/"],
+  "exec":"ts-node src/index.ts",
   "env": {
     "NODE_ENV": "develop"
   },
