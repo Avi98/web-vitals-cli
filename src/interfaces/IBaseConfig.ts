@@ -4,23 +4,26 @@ export interface IBaseConfig {
     run: number;
     env?: string;
     maxNumberOfRuns?: number;
-    debug?: boolean;
+    headless?: boolean;
     chromeCliOptions: string[];
-    puppetter: {
+    ci?: {
+      audits?: ["first-meaningful-paint", "speed-index"];
+    };
+    puppeteer: {
       urls: string[];
       root?: string;
       loginSelector: {
         emailFieldSelector: string;
         passwordFieldSelector: string;
       };
-      loginCredentionals: {
+      loginCredentials: {
         userName: string;
         password: string;
       };
-      puppetterScriptPath?: string;
-      puppetterLunchOptions?: any;
+      puppeteerScriptPath?: string;
+      puppeteerLunchOptions?: any;
     };
-    lightouseConfig?: any;
+    lighthouseConfig?: any;
     clearReports?: boolean;
   };
 }
