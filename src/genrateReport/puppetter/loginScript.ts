@@ -1,4 +1,4 @@
-import { IBaseConfig } from "../../interfaces/baseConfig";
+import { IBaseConfig } from "../../interfaces/IBaseConfig";
 
 let counter = 1;
 async function login(page: any, context: IBaseConfig & { url: string }) {
@@ -6,8 +6,8 @@ async function login(page: any, context: IBaseConfig & { url: string }) {
   const loginUrl = context.url;
   const {
     loginSelector: { emailFieldSelector = "", passwordFieldSelector = "" },
-    loginCredentionals: { password = "", userName = "" },
-  } = context.option.puppetter;
+    loginCredentials: { password, userName },
+  } = context.option.puppeteer;
   if (!emailFieldSelector || !passwordFieldSelector || !password || !userName)
     return;
   await page.goto(loginUrl);

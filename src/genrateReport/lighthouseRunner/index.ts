@@ -1,6 +1,6 @@
 import path from "path";
 import { spawn } from "child_process";
-import { IBaseConfig } from "../../interfaces/baseConfig";
+import { IBaseConfig } from "../../interfaces/IBaseConfig";
 import { log } from "../../utils/log";
 import { BASE_BASE_BROWSER_PORT } from "../../utils/consts";
 
@@ -19,7 +19,7 @@ class LighthouseRunner implements ILighthouseRunner {
   }
 
   async run(url: string, options: IBaseConfig) {
-    const headless = [`--quite`, `--chrome-flags="--no-sandbox --headless"`];
+    const headless = [`--verbose`, `--chrome-flags="--headless"`];
     //emits output in Json formate, write out to stdout
     const cliOptions = [
       url,
@@ -29,10 +29,9 @@ class LighthouseRunner implements ILighthouseRunner {
       "json",
       "--output-path",
       "stdout",
-      "--screenEmulation.disabled",
     ];
 
-    if (!options.option.debug) {
+    if (!options.option.headless) {
       cliOptions.push(...headless);
     }
     if (options.option.chromeCliOptions) {
@@ -43,38 +42,39 @@ class LighthouseRunner implements ILighthouseRunner {
       cliOptions.push(...headless);
     }
 
-    let resolve: any;
-    let reject: any;
+    let resolve: unknown;
+    let reject: unknown;
 
     const promise = new Promise((res, rej) => {
       resolve = res;
       reject = rej;
     });
 
-    console.log("Start--->");
     const lighthouse = this.getLighthousePath();
 
     const child = spawn("node", [lighthouse, ...cliOptions]);
 
-    let stdout: unknown;
-    let stderr: unknown;
-    child.stdout.on("data", (result) => {
+    let stdout: unknown = "";
+    let stderr: unknown = "";
+    child.stdout.on("data", (result = "") => {
       stdout += result.toString();
     });
 
     child.stderr.on("error", (error) => {
       stderr += error.toString();
+      console.error(error);
     });
 
     child.on("exit", (code) => {
-      if (code === 0) return resolve(stdout);
+      if (code === 0 && typeof resolve === "function") return resolve(stdout);
 
+      console.log("code--->", code);
       const error = new Error("Error occurred while running lighthouse");
       // @ts-expect-error
       error.stdout = stdout;
       //@ts-expect-error
       error.stderr = stderr;
-      return reject(error);
+      return typeof reject === "function" && reject(error);
     });
     return promise;
   }
@@ -84,6 +84,18 @@ class LighthouseRunner implements ILighthouseRunner {
       require.resolve("lighthouse"),
       "../../lighthouse-cli/index.js"
     );
+  }
+
+  async runUntilSuccess(url: string, options: IBaseConfig) {
+    const attempts = [];
+    while (attempts.length < 3) {
+      try {
+        return await this.run(url, options);
+      } catch (e) {
+        attempts.push(e);
+      }
+    }
+    throw attempts[0];
   }
 }
 export default LighthouseRunner;
