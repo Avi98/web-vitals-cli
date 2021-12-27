@@ -1,20 +1,20 @@
 import path from "path";
 import loginScript from "./loginScript";
-import { IBaseConfig } from "../../interfaces/baseConfig";
+import { IBaseConfig } from "../../interfaces/IBaseConfig";
 import { log } from "../../utils/log";
 import { BASE_BASE_BROWSER_PORT } from "../../utils/consts";
-export interface IPuppetterMiddleware {
+export interface IPuppeteerMiddleware {
   getBrowser: () => void;
-  getPuppetter: () => any;
+  getpuppeteer: () => any;
   isActive: () => boolean;
-  invokePuppetterScript: (url: string) => void;
+  invokePuppeteerScript: (url: string) => void;
   getBrowserPortNumber: () => number;
 }
 
 /**
  * @Todo need to test this with agent-dashborad built, Will this work or not
  */
-class PuppetterMiddleware implements IPuppetterMiddleware {
+class PuppeteerMiddleware implements IPuppeteerMiddleware {
   private options: IBaseConfig;
   private browser: any;
   private isPuppeterActive: boolean;
@@ -33,26 +33,26 @@ class PuppetterMiddleware implements IPuppetterMiddleware {
   /**
    *
    * @todo
-   * 1. remove puppetter dependency from this folder
+   * 1. remove puppeteer dependency from this folder
    * 2. import it from current project
    */
-  getPuppetter() {
+  getpuppeteer() {
     return require("puppeteer");
   }
 
   isActive() {
     return (
-      Boolean(this.options.option.puppetter.puppetterScriptPath) ||
+      Boolean(this.options.option.puppeteer.puppeteerScriptPath) ||
       this.isPuppeterActive
     );
   }
 
   async getBrowser() {
-    const puppeteer = this.getPuppetter();
+    const puppeteer = this.getpuppeteer();
     this.browser = await puppeteer.launch({
-      ...this.options.option.puppetter.puppetterLunchOptions,
+      ...this.options.option.puppeteer.puppeteerLunchOptions,
       pipe: false,
-      headless: false,
+      headless: !this.options.option.headless,
 
       timeout: 0,
       args: [`--remote-debugging-port=${BASE_BASE_BROWSER_PORT}`],
@@ -60,12 +60,12 @@ class PuppetterMiddleware implements IPuppetterMiddleware {
     return this.browser;
   }
 
-  async invokePuppetterScript(url: string) {
-    if (!this.options.option.puppetter) return;
+  async invokePuppeteerScript(url: string) {
+    if (!this.options.option.puppeteer) return;
     const options = this.options;
     const browser = await this.getBrowser();
-    const scriptPath = this.options.option.puppetter.puppetterScriptPath;
-    const isLoginRequired = !!this.options.option.puppetter?.loginCredentionals;
+    const scriptPath = this.options.option.puppeteer.puppeteerScriptPath;
+    const isLoginRequired = !!this.options.option.puppeteer?.loginCredentials;
     // need to invock login script with options passed else invoke script
     try {
       if (!isLoginRequired) return;
@@ -79,9 +79,9 @@ class PuppetterMiddleware implements IPuppetterMiddleware {
       log("login in");
       await loginScript(browser, { ...options, url });
     } catch (error) {
-      throw new Error("Error occurred while running the puppeter");
+      throw new Error("Error occurred while running the puppeteer");
     }
   }
 }
 
-export default PuppetterMiddleware;
+export default PuppeteerMiddleware;

@@ -2,13 +2,13 @@ import fs from "fs";
 import rimraf from "rimraf";
 import path from "path";
 
-import { IBaseConfig } from "../interfaces/baseConfig";
+import { IBaseConfig } from "../interfaces/IBaseConfig";
 import LighthouseRunner from "./lighthouseRunner";
-import PuppetterMiddleware from "./puppetter";
+import PuppeteerMiddleware from "./puppetter";
 import StaticServer from "./server";
 import { log, messageTypeEnum } from "../utils/log";
 import { BASE_REPORT_DIR } from "../utils/consts";
-import { uploadReports } from "../uploadReports";
+import { GenerateReport } from "./genrateReportTabel";
 
 type isReportDirExisitsType = () => void;
 const createReportDirIfNotThere: isReportDirExisitsType = () => {
@@ -30,23 +30,35 @@ const runOnUrl = async (url: string, option: IBaseConfig) => {
   const maxNumberOfRuns = option.option.maxNumberOfRuns || 3;
 
   createReportDirIfNotThere();
-  try {
-    const result: any = await lighthouse.run(url, option);
-    const reportSavePath = path.join(
-      process.cwd(),
-      BASE_REPORT_DIR,
-      `${new Date()}.json`
-    );
-    if (result) fs.writeFileSync(reportSavePath, result);
-    log(`Done running lighthouse on ${url} `, messageTypeEnum.SUCCESS);
-  } catch (error: any) {
-    throw new Error(error);
+
+  for (let i = 0; i < maxNumberOfRuns; i++) {
+    try {
+      const result = await lighthouse.runUntilSuccess(url, option);
+      const reportSavePath = path.join(
+        process.cwd(),
+        BASE_REPORT_DIR,
+        `${new Date()}.json`
+      );
+
+      if (result) {
+        fs.writeFileSync(
+          reportSavePath,
+          result as NodeJS.ArrayBufferView,
+          "utf8"
+        );
+      }
+
+      log(`Done running lighthouse on ${url} `, messageTypeEnum.SUCCESS);
+    } catch (_) {
+      throw new Error("while running the lighthouse");
+    }
   }
 };
 
 /**start serve and get all urls */
 const startServerAndGetUrls = async (config: IBaseConfig) => {
-  const urls = config.option?.puppetter?.urls || [];
+  const urls = config.option?.puppeteer?.urls || [];
+
   const urlArray = Array.isArray(urls) ? urls : [urls];
   const pathToBuildDir = path.join(process.cwd(), config.option.buildPath);
 
@@ -74,18 +86,30 @@ const GatherLighthouseData = async (config: IBaseConfig) => {
   }
   // delete base dir
   const baseReportDirPath = path.join(process.cwd(), BASE_REPORT_DIR);
-  rimraf.sync(baseReportDirPath);
-
-  const puppeteer = new PuppetterMiddleware(config);
-  const { urls, server } = await startServerAndGetUrls(config);
-
-  await puppeteer.invokePuppetterScript(urls[0]);
-  for (let url of urls) {
-    // login into the script
-    // run lighthouse on every url and store the result
-    await runOnUrl(url, config);
+  if (baseReportDirPath) {
+    rimraf.sync(baseReportDirPath);
   }
-  server.close();
+
+  try {
+    const puppeteer = new PuppeteerMiddleware(config);
+    const reportTable = new GenerateReport(config);
+    const { urls, server } = await startServerAndGetUrls(config);
+    await puppeteer.invokePuppeteerScript(urls[0]);
+    for (let url of urls) {
+      // login into the script
+      // run lighthouse on every url and store the result
+      await runOnUrl(url, config);
+      if (config.option.ci) {
+        reportTable.createMarkdownTable(url);
+      }
+    }
+
+    process.send?.({ markdownComment: reportTable.markdownComment });
+    server.close();
+  } catch (error) {
+    console.error(error);
+  }
+
   log("Upload to server", messageTypeEnum.info);
   // uploadReports(config);
 };

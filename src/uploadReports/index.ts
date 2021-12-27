@@ -1,7 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { spawn, spawnSync } from "child_process";
-import { IBaseConfig } from "../interfaces/baseConfig";
+import { IBaseConfig } from "../interfaces/IBaseConfig";
 import { BASE_REPORT_DIR } from "../utils/consts";
 import {
   getAuthor,

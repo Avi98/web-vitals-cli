@@ -4,7 +4,7 @@ import express from "express";
 import compression from "compression";
 import { createServer } from "http";
 
-import { IBaseConfig } from "../interfaces/baseConfig";
+import { IBaseConfig } from "../interfaces/IBaseConfig";
 
 interface IStaticServer {
   listen: () => void;
