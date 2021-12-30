@@ -10,7 +10,7 @@ require("dotenv").config();
 let filePath;
 let options: any = {};
 
-const program = new Commander();
+const program = new Commander.Command();
 program
   .option(
     "-d, --debug",
