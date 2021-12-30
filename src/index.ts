@@ -1,19 +1,38 @@
 #!/usr/bin/env node
+
 import GatherLighthouseData from "./genrateReport";
-const fs = require("fs");
 const path = require("path");
 const chalk = require("chalk");
-const clear = require("clear");
 const figlet = require("figlet");
+const Commander = require("commander");
 require("dotenv").config();
 
 let filePath;
+let options: any = {};
+
+const program = new Commander.Command();
+program
+  .option(
+    "-d, --debug",
+    "run the cli in debug mode print all the console log errors along with the markdown"
+  )
+  .option("-h --headfull", "run the lighthouse in browser")
+  .option("-r --medianRun <run>", "number of median runs needs to perform");
+
+program.parse(process.argv);
+const { headfull = false, medianRun = 3 } = program.opts();
+
 if (process.env.NODE_ENV === "develop") {
   filePath = path.join(process.cwd(), "dummy-test/webVitalsrc.js");
 } else {
   filePath = path.join(process.cwd(), "webVitalsrc.js");
 }
-const options = require(filePath);
+options = require(filePath);
+
+if (headfull || medianRun) {
+  options.headless = headfull;
+  options.run = medianRun;
+}
 
 interface Error {
   name: string;

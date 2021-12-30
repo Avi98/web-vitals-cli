@@ -28,31 +28,34 @@ const runOnUrl = async (url: string, option: IBaseConfig) => {
   const lighthouse = new LighthouseRunner(option);
   //@TODO: run lighthouse on this url on number of times
   const maxNumberOfRuns = option.option.maxNumberOfRuns || 3;
+  const {
+    computeMedianRun,
+  } = require("lighthouse/lighthouse-core/lib/median-run.js");
 
   createReportDirIfNotThere();
 
+  const LIReport = [];
   for (let i = 0; i < maxNumberOfRuns; i++) {
     try {
       const result = await lighthouse.runUntilSuccess(url, option);
-      const reportSavePath = path.join(
-        process.cwd(),
-        BASE_REPORT_DIR,
-        `${new Date()}.json`
-      );
-
       if (result) {
-        fs.writeFileSync(
-          reportSavePath,
-          result as NodeJS.ArrayBufferView,
-          "utf8"
-        );
+        //@ts-expect-error
+        LIReport.push(JSON.parse(result));
       }
-
-      log(`Done running lighthouse on ${url} `, messageTypeEnum.SUCCESS);
-    } catch (_) {
-      throw new Error("while running the lighthouse");
+    } catch (error) {
+      throw error;
     }
   }
+  const medianResult = computeMedianRun(LIReport);
+  const reportSavePath = path.join(
+    process.cwd(),
+    BASE_REPORT_DIR,
+    `${new Date()}.json`
+  );
+  const logReport = JSON.stringify(medianResult, null, 2);
+  fs.writeFileSync(reportSavePath, logReport, "utf8");
+
+  log(`Done running lighthouse on ${url} `, messageTypeEnum.SUCCESS);
 };
 
 /**start serve and get all urls */
@@ -68,7 +71,7 @@ const startServerAndGetUrls = async (config: IBaseConfig) => {
   });
 
   if (!urlArray.length) {
-    throw new Error("Need to provide path for the errors");
+    throw new Error("Need to provide urls to run lighthouse on");
   }
 
   await server.listen();

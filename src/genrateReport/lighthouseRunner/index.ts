@@ -11,7 +11,6 @@ interface ILighthouseRunner {
   getLighthousePath: () => any;
 }
 
-const isProd = process.env.NODE_ENVIRONMENT === "production";
 class LighthouseRunner implements ILighthouseRunner {
   private options: IBaseConfig;
   constructor(options: IBaseConfig) {
@@ -19,7 +18,6 @@ class LighthouseRunner implements ILighthouseRunner {
   }
 
   async run(url: string, options: IBaseConfig) {
-    const headless = [`--verbose`, `--chrome-flags="--headless"`];
     //emits output in Json formate, write out to stdout
     const cliOptions = [
       url,
@@ -31,15 +29,8 @@ class LighthouseRunner implements ILighthouseRunner {
       "stdout",
     ];
 
-    if (!options.option.headless) {
-      cliOptions.push(...headless);
-    }
     if (options.option.chromeCliOptions) {
       cliOptions.push(...options.option.chromeCliOptions);
-    }
-
-    if (isProd) {
-      cliOptions.push(...headless);
     }
 
     let resolve: unknown;
