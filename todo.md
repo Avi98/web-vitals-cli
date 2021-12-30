@@ -17,4 +17,3 @@
 
 1. Upload payload
 2. remove duplicate file and compute median
-3. commander hook for cmd line
