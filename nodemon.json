@@ -6,7 +6,7 @@
     "ts": "node --require ts-node/register"
   },
   "watch": ["src/"],
-  "exec":"node --inspect-brk ts-node src/index.ts",
+  "exec":"ts-node src/index.ts",
   "env": {
     "NODE_ENV": "develop"
   },

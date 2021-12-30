@@ -16,7 +16,7 @@
     "create": "npm run build && npm run test",
     "build": "tsc -p .",
     "local": "sudo npm i -g && webVital-cli",
-    "global": "npm i -g && webVital-cli",
+    "global": "npm i -g",
     "refresh": "rm -rf ./node_modules ./package-lock.json && npm install"
   },
   "author": "avinash",
