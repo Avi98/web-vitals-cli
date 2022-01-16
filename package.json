@@ -1,8 +1,12 @@
 {
-  "name": "webvitals-ci",
+  "name": "webvitals-cli",
   "version": "0.0.1",
-  "description": "webVitals-ci cli for genrating and storing report for web vitals cli",
+  "description": "webVitals-cli is used for renrating reports from lighthouse.",
   "main": "./lib/index.js",
+  "keywords": [
+    "web-vitals-report",
+    "webvitals-cli"
+  ],
   "bin": {
     "webVital-cli": "./lib/index.js"
   },
