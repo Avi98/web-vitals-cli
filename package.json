@@ -1,7 +1,8 @@
 {
   "name": "webvitals-cli",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "webVitals-cli is used for renrating reports from lighthouse.",
+  "homepage": "https://github.com/Avi98/web-vitals-cli#introduction",
   "main": "./lib/index.js",
   "keywords": [
     "web-vitals-report",
@@ -23,7 +24,7 @@
     "global": "npm i -g",
     "refresh": "rm -rf ./node_modules ./package-lock.json && npm install"
   },
-  "author": "avinash",
+  "author": "Avinash",
   "license": "ISC",
   "dependencies": {
     "chalk": "^4.1.2",
