@@ -102,7 +102,8 @@ const GatherLighthouseData = async (config: IBaseConfig) => {
       // login into the script
       // run lighthouse on every url and store the result
       await runOnUrl(url, config);
-      if (config.option.ci) {
+      if (config.option.markdown) {
+        reportTable.removeMarkdownFile();
         reportTable.createMarkdownTable(url);
       }
     }
