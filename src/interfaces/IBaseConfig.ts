@@ -6,6 +6,7 @@ export interface IBaseConfig {
     maxNumberOfRuns?: number;
     headless?: boolean;
     chromeCliOptions: string[];
+    markdown?: boolean;
     ci?: {
       audits?: ["first-meaningful-paint", "speed-index"];
     };

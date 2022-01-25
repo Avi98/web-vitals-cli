@@ -13,6 +13,7 @@ interface IGenerateReport {
 type IGetWebVitalsAndAudits = { path: string } & ILighthouse["audits"];
 
 const reportPath = path.join(process.cwd(), BASE_REPORT_DIR);
+const commentFilePath = path.join(process.cwd(), "comment.txt");
 export class GenerateReport implements IGenerateReport {
   options: IBaseConfig;
   auditReport: [] | IGetWebVitalsAndAudits[];
@@ -116,5 +117,15 @@ export class GenerateReport implements IGenerateReport {
 
     table += `</details>`;
     this.markdownComment = table;
+    fs.writeFileSync("comment.txt", this.markdownComment);
+  }
+
+  private checkIfMarkdownExist() {
+    return fs.existsSync(commentFilePath);
+  }
+  removeMarkdownFile() {
+    if (this.checkIfMarkdownExist()) {
+      fs.unlinkSync(commentFilePath);
+    }
   }
 }

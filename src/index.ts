@@ -17,10 +17,11 @@ program
     "run the cli in debug mode print all the console log errors along with the markdown"
   )
   .option("-h --headfull", "run the lighthouse in browser")
+  .option("-m --markdown", "generate markdown with summary report.")
   .option("-r --medianRun <run>", "number of median runs needs to perform");
 
 program.parse(process.argv);
-const { headfull = false, medianRun = 3 } = program.opts();
+const { headfull = false, medianRun = 3, markdown = false } = program.opts();
 
 if (process.env.NODE_ENV === "develop") {
   filePath = path.join(process.cwd(), "dummy-test/webVitalsrc.js");
@@ -29,9 +30,10 @@ if (process.env.NODE_ENV === "develop") {
 }
 options = require(filePath);
 
-if (headfull || medianRun) {
+if (headfull || medianRun || markdown) {
   options.headless = headfull;
   options.run = medianRun;
+  options.markdown = markdown;
 }
 
 interface Error {
