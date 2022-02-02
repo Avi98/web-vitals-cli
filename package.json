@@ -1,6 +1,6 @@
 {
-  "name": "webvitals-cli",
-  "version": "0.0.4",
+  "name": "pref-report-cli",
+  "version": "0.0.1",
   "description": "webVitals-cli is used for renrating reports from lighthouse.",
   "homepage": "https://github.com/Avi98/web-vitals-cli#introduction",
   "main": "./lib/index.js",
