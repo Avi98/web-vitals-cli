@@ -1,15 +1,15 @@
 {
   "name": "pref-report-cli",
   "version": "0.0.1",
-  "description": "webVitals-cli is used for renrating reports from lighthouse.",
+  "description": "webVitals-cli is used for generating reports from lighthouse.",
   "homepage": "https://github.com/Avi98/web-vitals-cli#introduction",
   "main": "./lib/index.js",
   "keywords": [
     "web-vitals-report",
-    "webvitals-cli"
+    "pref-report-cli"
   ],
   "bin": {
-    "webVital-cli": "./lib/index.js"
+    "pref-report-cli": "./lib/index.js"
   },
   "repository": {
     "type": "git",
@@ -20,7 +20,7 @@
     "dev": "nodemon --config nodemon.json",
     "create": "npm run build && npm run test",
     "build": "tsc -p .",
-    "local": "sudo npm i -g && webVital-cli",
+    "local": "sudo npm i -g && pref-report-cli",
     "global": "npm i -g",
     "refresh": "rm -rf ./node_modules ./package-lock.json && npm install"
   },
@@ -36,7 +36,7 @@
     "figlet": "^1.5.2",
     "lighthouse": "^8.3.0",
     "path": "^0.12.7",
-    "puppeteer": "^10.2.0",
+    "puppeteer": "^13.4.1",
     "rimraf": "^3.0.2"
   },
   "devDependencies": {
@@ -44,7 +44,7 @@
     "@types/express": "^4.17.13",
     "@types/node": "^16.7.4",
     "@types/rimraf": "^3.0.2",
-    "nodemon": "^1.12.7",
+    "nodemon": "^2.0.15",
     "ts-node": "^10.2.1",
     "typescript": "^4.4.2"
   }
