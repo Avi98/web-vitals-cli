@@ -18,17 +18,34 @@ program
   )
   .option("-h --headfull", "run the lighthouse in browser")
   .option("-m --markdown", "generate markdown with summary report.")
-  .option("-r --medianRun <run>", "number of median runs needs to perform");
+  .option("-r --medianRun <run>", "number of median runs needs to perform")
+  .option(
+    "-f --configFilePath <string>",
+    "configFile path based on which the file is"
+  );
 
 program.parse(process.argv);
-const { headfull = false, medianRun = 3, markdown = false } = program.opts();
+const {
+  headfull = false,
+  medianRun = 3,
+  markdown = false,
+  configFilePath = null,
+} = program.opts();
 
-if (process.env.NODE_ENV === "develop") {
-  filePath = path.join(process.cwd(), "dummy-test/webVitalsrc.js");
+if (process.env.NODE_ENV === "asdevelop") {
+  filePath = path.join(process.cwd(), "dummy-test/prefReportrc.js");
+} else if (configFilePath) {
+  filePath = configFilePath;
 } else {
-  filePath = path.join(process.cwd(), "webVitalsrc.js");
+  throw new Error("Config file not found");
 }
-options = require(filePath);
+
+try {
+  options = require(filePath);
+} catch (error) {
+  process.stderr.write(chalk.red("Config file can't be imported"));
+  process.exit(1);
+}
 
 if (headfull || medianRun || markdown) {
   options.headless = headfull;
