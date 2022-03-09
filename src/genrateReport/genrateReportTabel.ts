@@ -106,6 +106,7 @@ export class GenerateReport implements IGenerateReport {
   createMarkdownTable(url: string): void {
     let table = this.tableHeader;
     const fileList = this.files();
+    const markdownPath = this.options.option.markdownPath;
     const report = this.setReportData(url, fileList);
 
     if (!this.ciOptions() || !report) return;
@@ -117,7 +118,7 @@ export class GenerateReport implements IGenerateReport {
 
     table += `</details>`;
     this.markdownComment = table;
-    fs.writeFileSync("comment.txt", this.markdownComment);
+    fs.writeFileSync(markdownPath, this.markdownComment);
   }
 
   private checkIfMarkdownExist() {

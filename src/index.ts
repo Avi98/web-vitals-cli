@@ -22,14 +22,21 @@ program
   .option(
     "-f --configFilePath <string>",
     "configFile path based on which the file is"
+  )
+  .option(
+    "-f --commentFilePath <string>",
+    "comment file path ci.audits are going to be written"
   );
 
 program.parse(process.argv);
+const defaultOutMarkdown = path.join(process.cwd(), "comment.md");
+
 const {
   headfull = false,
   medianRun = 3,
   markdown = false,
   configFilePath = null,
+  markdownComment = defaultOutMarkdown,
 } = program.opts();
 
 if (process.env.NODE_ENV === "asdevelop") {
@@ -51,6 +58,7 @@ if (headfull || medianRun || markdown) {
   options.headless = headfull;
   options.run = medianRun;
   options.markdown = markdown;
+  options.markdownPath = markdownComment;
 }
 
 interface Error {
