@@ -7,6 +7,7 @@ export interface IBaseConfig {
     headless?: boolean;
     chromeCliOptions: string[];
     markdown?: boolean;
+    markdownPath: string;
     ci?: {
       audits?: ["first-meaningful-paint", "speed-index"];
     };
