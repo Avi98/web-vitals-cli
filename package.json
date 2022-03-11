@@ -16,7 +16,7 @@
     "url": "https://9958703925dad@dev.azure.com/9958703925dad/Lighthouse-CI/_git/Lighthouse-cli"
   },
   "scripts": {
-    "start": "nodemon --config nodemon.json",
+    "start": "NODE_ENV=develop nodemon --config nodemon.json",
     "dev": "nodemon --config nodemon.json",
     "create": "npm run build && npm run test",
     "build": "tsc -p .",

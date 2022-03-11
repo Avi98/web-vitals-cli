@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import GatherLighthouseData from "./genrateReport";
+import { IBaseConfig } from "./interfaces/IBaseConfig";
 const path = require("path");
 const chalk = require("chalk");
 const figlet = require("figlet");
@@ -8,7 +9,7 @@ const Commander = require("commander");
 require("dotenv").config();
 
 let filePath;
-let options: any = {};
+let options: IBaseConfig | null = null;
 
 const program = new Commander.Command();
 program
@@ -31,34 +32,35 @@ program
 program.parse(process.argv);
 const defaultOutMarkdown = path.join(process.cwd(), "comment.md");
 
+if (process.env.NODE_ENV == "develop") {
+  filePath = path.join(process.cwd(), "/dummy-test/prefReportrc.js");
+} else {
+  const { configFilePath = null } = program.opts();
+  if (configFilePath) {
+    filePath = configFilePath;
+  } else {
+    process.stderr.write("Config file path not found");
+    process.exit(1);
+  }
+}
+
+options = getConfig(filePath);
+
 const {
-  headfull = false,
-  medianRun = 3,
-  markdown = false,
+  headfull = options?.option.headless || false,
+  medianRun = options?.option.run || 3,
+  markdown = options?.option.markdown || false,
   configFilePath = null,
-  markdownComment = defaultOutMarkdown,
+  markdownComment = options?.option.markdownPath || defaultOutMarkdown,
 } = program.opts();
 
-if (process.env.NODE_ENV === "asdevelop") {
-  filePath = path.join(process.cwd(), "dummy-test/prefReportrc.js");
-} else if (configFilePath) {
-  filePath = configFilePath;
-} else {
-  throw new Error("Config file not found");
-}
-
-try {
-  options = require(filePath);
-} catch (error) {
-  process.stderr.write(chalk.red("Config file can't be imported"));
-  process.exit(1);
-}
-
 if (headfull || medianRun || markdown) {
-  options.headless = headfull;
-  options.run = medianRun;
-  options.markdown = markdown;
-  options.markdownPath = markdownComment;
+  Object.assign(options?.option, {
+    markdownPath: markdownComment,
+    headless: headfull,
+    run: medianRun,
+    markdown,
+  });
 }
 
 interface Error {
@@ -78,6 +80,17 @@ console.log(
   )
 );
 
+function getConfig(filePath?: string) {
+  if (!filePath) return;
+  let config;
+  try {
+    config = require(filePath);
+    return config;
+  } catch (error) {
+    process.stderr.write(chalk.red("Config file can't be imported"));
+    process.exit(1);
+  }
+}
 GatherLighthouseData(options).catch((error: Error) => {
   process.stderr.write(chalk.red("error while running the cli", error));
   if (error.stdout) process.stderr.write("\n" + error.stdout.slice(0, 4000));

@@ -54,15 +54,12 @@ export class GenerateReport implements IGenerateReport {
 
   get tableHeader(): string {
     let table = `
-    ## Web Vitals report
-    <details opened>
+## Web Vitals report
+<details opened>
+  <summary>Click here to open results 📉</summary>
     
-    <summary>Click here to open results 📉</summary>
-    
-    | Path      | CLS   | LCP | FID |
-    | --------- | ----- | --- | --- |
-    
-  `;
+| Path                        | CLS   | LCP | FID |
+| --------------------------- | ----- | --- | --- | \n`;
     return table;
   }
 
@@ -111,9 +108,7 @@ export class GenerateReport implements IGenerateReport {
 
     if (!this.ciOptions() || !report) return;
     report.forEach((report) => {
-      table += `
-    | ${report.path} | ${report["cumulative-layout-shift"].score} | ${report["largest-contentful-paint"].score} | ${report["max-potential-fid"].score}
-    `;
+      table += `| ${report.path} | ${report["cumulative-layout-shift"].score} | ${report["largest-contentful-paint"].score} | ${report["max-potential-fid"].score} \n`;
     });
 
     table += `</details>`;

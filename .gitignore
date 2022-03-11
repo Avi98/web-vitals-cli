@@ -153,3 +153,5 @@ webVitalsrc.js
 .build/
 build
 WEB_VITALS_REPORT/
+dummy-test
+comment.md

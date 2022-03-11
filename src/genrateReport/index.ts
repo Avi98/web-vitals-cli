@@ -83,7 +83,7 @@ const startServerAndGetUrls = async (config: IBaseConfig) => {
   return { urls: urlArray, server };
 };
 
-const GatherLighthouseData = async (config: IBaseConfig) => {
+const GatherLighthouseData = async (config: IBaseConfig | null) => {
   if (!config) {
     throw new Error("Please provide webvitals config file");
   }

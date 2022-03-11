@@ -59,7 +59,6 @@ class LighthouseRunner implements ILighthouseRunner {
     child.on("exit", (code) => {
       if (code === 0 && typeof resolve === "function") return resolve(stdout);
 
-      console.log("code--->", code);
       const error = new Error("Error occurred while running lighthouse");
       // @ts-expect-error
       error.stdout = stdout;
