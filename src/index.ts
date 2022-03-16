@@ -32,16 +32,19 @@ program
 program.parse(process.argv);
 const defaultOutMarkdown = path.join(process.cwd(), "comment.md");
 
-if (process.env.NODE_ENV == "develop") {
-  filePath = path.join(process.cwd(), "/dummy-test/prefReportrc.js");
+const { configFilePath = null } = program.opts();
+const dummyConfigFilePath = path.join(
+  process.cwd(),
+  "/dummy-test/prefReportrc.js"
+);
+process.stdout.write(`config file path in cli at ${configFilePath}`);
+if (configFilePath) {
+  filePath = configFilePath;
+} else if (dummyConfigFilePath && !configFilePath) {
+  filePath = dummyConfigFilePath;
 } else {
-  const { configFilePath = null } = program.opts();
-  if (configFilePath) {
-    filePath = configFilePath;
-  } else {
-    process.stderr.write("Config file path not found");
-    process.exit(1);
-  }
+  process.stderr.write(chalk.red("No config file path provided"));
+  process.exit(1);
 }
 
 options = getConfig(filePath);
@@ -50,7 +53,6 @@ const {
   headfull = options?.option.headless || false,
   medianRun = options?.option.run || 3,
   markdown = options?.option.markdown || false,
-  configFilePath = null,
   markdownComment = options?.option.markdownPath || defaultOutMarkdown,
 } = program.opts();
 
@@ -82,12 +84,15 @@ console.log(
 
 function getConfig(filePath?: string) {
   if (!filePath) return;
-  let config;
   try {
-    config = require(filePath);
+    process.stdout.write(chalk.green("\n file path:" + filePath + "\n"));
+    const config = require(filePath);
     return config;
   } catch (error) {
-    process.stderr.write(chalk.red("Config file can't be imported"));
+    process.stderr.write(
+      chalk.red(`\nConfig file can't be imported at ${filePath}\n`)
+    );
+    process.stderr.write(error as string);
     process.exit(1);
   }
 }

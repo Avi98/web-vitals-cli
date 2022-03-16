@@ -108,7 +108,6 @@ const GatherLighthouseData = async (config: IBaseConfig | null) => {
       }
     }
 
-    process.send?.({ markdownComment: reportTable.markdownComment });
     server.close();
   } catch (error) {
     console.error(error);

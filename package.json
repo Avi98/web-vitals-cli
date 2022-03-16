@@ -1,6 +1,6 @@
 {
   "name": "pref-report-cli",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "webVitals-cli is used for generating reports from lighthouse.",
   "homepage": "https://github.com/Avi98/web-vitals-cli#introduction",
   "main": "./lib/index.js",
@@ -19,7 +19,7 @@
     "start": "NODE_ENV=develop nodemon --config nodemon.json",
     "dev": "nodemon --config nodemon.json",
     "create": "npm run build && npm run test",
-    "build": "tsc -p .",
+    "build": "NODE_ENV=build tsc -p .",
     "local": "sudo npm i -g && pref-report-cli",
     "global": "npm i -g",
     "refresh": "rm -rf ./node_modules ./package-lock.json && npm install"
