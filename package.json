@@ -1,6 +1,6 @@
 {
   "name": "pref-report-cli",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "description": "webVitals-cli is used for generating reports from lighthouse.",
   "homepage": "https://github.com/Avi98/web-vitals-cli#introduction",
   "main": "./lib/index.js",

@@ -1,15 +1,19 @@
 import path from "path";
 import { spawn } from "child_process";
 import { IBaseConfig } from "../../interfaces/IBaseConfig";
-import { log } from "../../utils/log";
 import { BASE_BASE_BROWSER_PORT } from "../../utils/consts";
-
-const chromeLauncher = require("chrome-launcher");
-
 interface ILighthouseRunner {
   run: (url: string, options: IBaseConfig) => Promise<any>;
   getLighthousePath: () => any;
 }
+
+const getChromeFlags = (cliOptions: Record<string, boolean>) => {
+  const chromeFlags = Object.keys(cliOptions)
+    .map((flags) => cliOptions[flags] && flags)
+    .join(",");
+
+  return chromeFlags;
+};
 
 class LighthouseRunner implements ILighthouseRunner {
   private options: IBaseConfig;
@@ -19,6 +23,7 @@ class LighthouseRunner implements ILighthouseRunner {
 
   async run(url: string, options: IBaseConfig) {
     //emits output in Json formate, write out to stdout
+
     const cliOptions = [
       url,
       "--port",
@@ -27,11 +32,8 @@ class LighthouseRunner implements ILighthouseRunner {
       "json",
       "--output-path",
       "stdout",
+      `--chrome-flags=${getChromeFlags(options.option.chromeCliOptions)}`,
     ];
-
-    if (options.option.chromeCliOptions) {
-      cliOptions.push(...options.option.chromeCliOptions);
-    }
 
     let resolve: unknown;
     let reject: unknown;

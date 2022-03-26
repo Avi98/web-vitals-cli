@@ -75,7 +75,7 @@ interface Error {
 
 console.log(
   chalk.green(
-    figlet.textSync("web vitals ci", {
+    figlet.textSync("Performance Report CLI", {
       height: 10,
       whitespaceBreak: false,
     })

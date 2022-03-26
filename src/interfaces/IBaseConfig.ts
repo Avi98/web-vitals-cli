@@ -5,7 +5,7 @@ export interface IBaseConfig {
     env?: string;
     maxNumberOfRuns?: number;
     headless?: boolean;
-    chromeCliOptions: string[];
+    chromeCliOptions: Record<string, boolean>;
     markdown?: boolean;
     markdownPath: string;
     ci?: {
