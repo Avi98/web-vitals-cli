@@ -49,11 +49,10 @@ class PuppeteerMiddleware implements IPuppeteerMiddleware {
 
   async getBrowser() {
     const puppeteer = this.getpuppeteer();
-    const isProd = process.env.NODE_ENVIRONMENT === "production";
     this.browser = await puppeteer.launch({
       ...this.options.option.puppeteer.puppeteerLunchOptions,
       pipe: false,
-      headless: isProd ? true : this.options.option.headless,
+      headless: this.options.option.headless,
       timeout: 0,
       // same port as lighthouse runs, since have a login script that needs to be run on the same port
       args: [`--remote-debugging-port=${BASE_BASE_BROWSER_PORT}`],
