@@ -111,6 +111,7 @@ const GatherLighthouseData = async (config: IBaseConfig | null) => {
     server.close();
   } catch (error) {
     console.error(error);
+    throw new Error("while running the lighthouse");
   }
 
   log("Upload to server", messageTypeEnum.info);
