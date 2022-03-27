@@ -4,7 +4,7 @@ import path from "path";
 
 import { IBaseConfig } from "../interfaces/IBaseConfig";
 import LighthouseRunner from "./lighthouseRunner";
-import PuppeteerMiddleware from "./puppetter";
+import PuppeteerMiddleware from "./puppeteer";
 import StaticServer from "./server";
 import { log, messageTypeEnum } from "../utils/log";
 import { BASE_REPORT_DIR } from "../utils/consts";
