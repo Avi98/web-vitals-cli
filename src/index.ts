@@ -1,11 +1,14 @@
 #!/usr/bin/env node
 
+import path from "path";
+import chalk from "chalk";
+import rimraf from "rimraf";
+import Commander from "commander";
 import GatherLighthouseData from "./genrateReport";
 import { IBaseConfig } from "./interfaces/IBaseConfig";
-const path = require("path");
-const chalk = require("chalk");
+import { BASE_REPORT_DIR } from "./utils/consts";
+
 const figlet = require("figlet");
-const Commander = require("commander");
 require("dotenv").config();
 
 let filePath;
@@ -96,8 +99,15 @@ function getConfig(filePath?: string) {
     process.exit(1);
   }
 }
-GatherLighthouseData(options).catch((error: Error) => {
-  process.stderr.write(chalk.red("error while running the cli", error));
-
-  process.exit(1);
-});
+GatherLighthouseData(options)
+  .catch((error: Error) => {
+    process.stderr.write(chalk.red("error while running the cli", error));
+    process.exit(1);
+  })
+  .finally(() => {
+    const baseReportDirPath = path.join(process.cwd(), BASE_REPORT_DIR);
+    if (baseReportDirPath) {
+      rimraf.sync(baseReportDirPath);
+    }
+    process.stdout.write(chalk.green("CLI run is done\n"));
+  });

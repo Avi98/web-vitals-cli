@@ -8,6 +8,7 @@ export interface IPuppeteerMiddleware {
   getBrowser: () => void;
   getPuppeteer: () => any;
   isActive: () => boolean;
+  closeBrowser: VoidFunction;
   invokePuppeteerScript: (url: string) => void;
   getBrowserPortNumber: () => number;
 }
@@ -19,14 +20,14 @@ class PuppeteerMiddleware implements IPuppeteerMiddleware {
   private browser: any;
   private headless: boolean;
   private options: IBaseConfig;
-  private isPuppeterActive: boolean;
+  private isPuppeteerActive: boolean;
   private chromePath: string | null;
   private puppeteerOptions: IBaseConfig["option"]["puppeteer"];
 
   constructor(options: IBaseConfig) {
     this.browser = null;
     this.options = options;
-    this.isPuppeterActive = false;
+    this.isPuppeteerActive = false;
     this.chromePath =
       options.option.puppeteer.puppeteerLunchOptions?.executablePath || null;
     this.headless = options.option.headless || true;
@@ -47,7 +48,7 @@ class PuppeteerMiddleware implements IPuppeteerMiddleware {
   isActive() {
     return (
       Boolean(this.puppeteerOptions.puppeteerScriptPath) ||
-      this.isPuppeterActive
+      this.isPuppeteerActive
     );
   }
 
@@ -58,7 +59,10 @@ class PuppeteerMiddleware implements IPuppeteerMiddleware {
     const location = require("chrome-location");
     chromePath = location;
     process.stdout.write(
-      chalk.green(`chrome location found at ----> ${chromePath}\n`)
+      chalk.green(
+        `\n No Chrome location was provided but found chrome at "${chromePath}". 
+        \n Want to run another instance of chrome use "puppeteerLunchOptions?.executablePath" \n`
+      )
     );
     return chromePath;
   }
@@ -99,6 +103,12 @@ class PuppeteerMiddleware implements IPuppeteerMiddleware {
     } catch (error) {
       throw new Error("Error occurred while running the puppeteer");
     }
+  }
+
+  closeBrowser() {
+    if (!this.browser) return;
+
+    this.browser.close();
   }
 }
 

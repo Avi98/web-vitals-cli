@@ -97,7 +97,12 @@ const GatherLighthouseData = async (config: IBaseConfig | null) => {
     const puppeteer = new PuppeteerMiddleware(config);
     const reportTable = new GenerateReport(config);
     const { urls, server } = await startServerAndGetUrls(config);
-    await puppeteer.invokePuppeteerScript(urls[0]);
+    await puppeteer
+      //this also spawns browser
+      .invokePuppeteerScript(urls[0])
+      //close all the open browsers to
+      .finally(() => puppeteer.closeBrowser());
+
     for (let url of urls) {
       // login into the script
       // run lighthouse on every url and store the result
