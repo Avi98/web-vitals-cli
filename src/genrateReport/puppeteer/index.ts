@@ -60,7 +60,7 @@ class PuppeteerMiddleware implements IPuppeteerMiddleware {
     chromePath = location;
     process.stdout.write(
       chalk.green(
-        `\n No Chrome location was provided but found chrome at "${chromePath}". 
+        `\n Chrome location found at "${chromePath}". 
         \n Want to run another instance of chrome use "puppeteerLunchOptions?.executablePath" \n`
       )
     );
