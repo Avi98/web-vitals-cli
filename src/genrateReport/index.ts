@@ -93,15 +93,13 @@ const GatherLighthouseData = async (config: IBaseConfig | null) => {
     rimraf.sync(baseReportDirPath);
   }
 
+  const puppeteer = new PuppeteerMiddleware(config);
   try {
-    const puppeteer = new PuppeteerMiddleware(config);
     const reportTable = new GenerateReport(config);
     const { urls, server } = await startServerAndGetUrls(config);
     await puppeteer
       //this also spawns browser
-      .invokePuppeteerScript(urls[0])
-      //close all the open browsers to
-      .finally(() => puppeteer.closeBrowser());
+      .invokePuppeteerScript(urls[0]);
 
     for (let url of urls) {
       // login into the script
@@ -117,9 +115,12 @@ const GatherLighthouseData = async (config: IBaseConfig | null) => {
   } catch (error) {
     console.error(error);
     throw new Error("while running the lighthouse");
+  } finally {
+    puppeteer.closeBrowser();
   }
 
-  log("Upload to server", messageTypeEnum.info);
+  //@TODO:
+  // log("Upload to server", messageTypeEnum.info);
   // uploadReports(config);
 };
 

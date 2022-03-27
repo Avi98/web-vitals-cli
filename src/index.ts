@@ -2,7 +2,7 @@
 
 import path from "path";
 import chalk from "chalk";
-import rimraf from "rimraf";
+import { rmSync } from "fs";
 import Commander from "commander";
 import GatherLighthouseData from "./genrateReport";
 import { IBaseConfig } from "./interfaces/IBaseConfig";
@@ -107,7 +107,11 @@ GatherLighthouseData(options)
   .finally(() => {
     const baseReportDirPath = path.join(process.cwd(), BASE_REPORT_DIR);
     if (baseReportDirPath) {
-      rimraf.sync(baseReportDirPath);
+      rmSync(baseReportDirPath, { recursive: true, force: true });
     }
-    process.stdout.write(chalk.green("CLI run is done\n"));
+    process.stdout.write(
+      chalk.green(
+        "Completed computing performance closing all open process....\n"
+      )
+    );
   });
