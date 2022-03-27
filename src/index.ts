@@ -78,7 +78,7 @@ interface Error {
 
 console.log(
   chalk.green(
-    figlet.textSync("Performance Report CLI", {
+    figlet.textSync("Pref Report CLI", {
       height: 10,
       whitespaceBreak: false,
     })
