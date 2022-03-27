@@ -1,3 +1,7 @@
+export interface IPuppeteerLunchOptions extends Record<string, any> {
+  executablePath: string;
+}
+
 export interface IBaseConfig {
   option: {
     buildPath: string;
@@ -23,7 +27,7 @@ export interface IBaseConfig {
         password: string;
       };
       puppeteerScriptPath?: string;
-      puppeteerLunchOptions?: any;
+      puppeteerLunchOptions?: IPuppeteerLunchOptions;
     };
     lighthouseConfig?: any;
     clearReports?: boolean;
